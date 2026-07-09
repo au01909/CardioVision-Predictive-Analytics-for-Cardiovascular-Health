@@ -1,0 +1,12 @@
+[
+  "age",
+  "trestbps",
+  "thalach",
+  "oldpeak",
+  "ca",
+  "sex",
+  "cp",
+  "exang",
+  "slope",
+  "thal"
+]
