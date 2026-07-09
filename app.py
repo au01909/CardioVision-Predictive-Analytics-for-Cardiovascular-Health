@@ -4,6 +4,34 @@ CardioVision - Streamlit Dashboard
 Implements FR-16 and Section 6 (Home, About Dataset, Model Performance,
 Risk Prediction, MLflow Experiments, Documentation).
 """
+import streamlit as st
+import platform
+import sklearn
+import joblib
+import os
+
+st.write("Python:", platform.python_version())
+st.write("scikit-learn:", sklearn.__version__)
+st.write("joblib:", joblib.__version__)
+
+if os.path.exists("models/imputer.pkl"):
+    imp = joblib.load("models/imputer.pkl")
+    st.write("Imputer keys:", sorted(imp.__dict__.keys()))
+
+import streamlit as st
+import platform
+import sklearn
+import xgboost
+import numpy
+import pandas
+
+st.write({
+    "Python": platform.python_version(),
+    "scikit-learn": sklearn.__version__,
+    "xgboost": xgboost.__version__,
+    "numpy": numpy.__version__,
+    "pandas": pandas.__version__,
+})
 
 import os
 
