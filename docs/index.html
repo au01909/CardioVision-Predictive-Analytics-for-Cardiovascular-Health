@@ -13,7 +13,8 @@
   th, td { border: 1px solid #ddd; padding: 8px 12px; text-align: left; }
   th { background: #f5f5f5; }
   img { max-width: 100%; border: 1px solid #eee; border-radius: 6px; margin: 8px 0; }
-  a.button { display: inline-block; background: #A23B72; color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; margin-top: 10px; }
+  a.button { display: inline-block; background: #A23B72; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; margin-top: 10px; font-weight: bold; font-size: 16px;}
+  a.button:hover { background: #8a2f60; }
   code { background: #f5f5f5; padding: 2px 6px; border-radius: 4px; }
 </style>
 </head>
@@ -31,19 +32,18 @@ individual's risk of cardiovascular disease using the UCI Heart Disease
 dataset, built with reproducible pipelines, experiment tracking, explainable
 predictions, and a deployable dashboard.</p>
 
-<a class="button" href="README.md">Full Documentation (README)</a>
-
-<h2>Live Application</h2>
-<p>Deployed on Streamlit Community Cloud: <em>https://cardiovision-predictive-analytics-for-cardiovascular-health-mq.streamlit.app</em></p>
+<h2>🚀 Launch Live Application</h2>
+<p>Click the button below to interact with the live model, make predictions, and view the dashboard:</p>
+<a class="button" href="https://cardiovision-predictive-analytics-for-cardiovascular-health-mq.streamlit.app/">Open Streamlit Dashboard</a>
 
 <h2>Test Set Performance</h2>
 <table>
 <tr><th>Metric</th><th>Value</th></tr>
-<tr><td>Accuracy</td><td>80.3%</td></tr>
-<tr><td>Precision</td><td>74.4%</td></tr>
+<tr><td>Accuracy</td><td>83.6%</td></tr>
+<tr><td>Precision</td><td>78.0%</td></tr>
 <tr><td>Recall (Sensitivity)</td><td>97.0%</td></tr>
-<tr><td>F1 Score</td><td>84.2%</td></tr>
-<tr><td>ROC AUC</td><td>0.908</td></tr>
+<tr><td>F1 Score</td><td>86.5%</td></tr>
+<tr><td>ROC AUC</td><td>0.918</td></tr>
 </table>
 
 <h2>Evaluation Artifacts</h2>
@@ -55,8 +55,9 @@ predictions, and a deployable dashboard.</p>
 <pre><code>Dataset -> Preprocessing -> XGBoost Training -> Threshold Optimization
         -> Evaluation -> MLflow Tracking -> Streamlit Dashboard</code></pre>
 
-<h2>Source Code</h2>
-<p><a href="https://github.com/">View on GitHub</a> (update this link to your repository)</p>
+<h2>Source Code & Documentation</h2>
+<p><a href="https://github.com/au01909/CardioVision-Predictive-Analytics-for-Cardiovascular-Health">View Source Code on GitHub</a></p>
+<p><a href="README.md">View Full Documentation (README)</a></p>
 
 </body>
 </html>

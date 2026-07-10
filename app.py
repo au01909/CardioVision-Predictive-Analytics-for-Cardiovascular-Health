@@ -286,42 +286,53 @@ elif page == "Risk Prediction":
 # ---------------------------------------------------------------------------
 elif page == "MLflow Experiments":
     st.title("🧪 MLflow Experiment Tracking")
-
+    
     st.markdown(
-        "All training runs are tracked with MLflow (parameters, metrics, plots, "
-        "the serialized model, dataset version, and git commit hash)."
+        """
+        CardioVision uses **MLflow** to ensure reproducibility and rigorous experiment tracking. 
+        Every time `train.py` is executed locally, the following are automatically logged:
+        - Hyperparameters (learning rate, max depth, etc.)
+        - Performance metrics (ROC AUC, F1, Recall, etc.)
+        - The trained XGBoost model artifact
+        - The optimal decision threshold
+        """
     )
+
+    st.markdown("### Local Development Command")
     st.code(f"mlflow ui --backend-store-uri {config.MLFLOW_TRACKING_URI}", language="bash")
-    st.caption("Run the command above locally, then open http://localhost:5000 to browse runs.")
+    st.caption("Run the command above locally to browse the full interactive tracking UI at http://localhost:5000.")
 
-    try:
-        import mlflow
-        mlflow.set_tracking_uri(config.MLFLOW_TRACKING_URI)
-        client = mlflow.tracking.MlflowClient()
-        exp = client.get_experiment_by_name(config.MLFLOW_EXPERIMENT_NAME)
-        if exp is None:
-            st.info("No experiments logged yet. Run `python train.py` first.")
+    st.divider()
+    st.markdown("### Experiment Dashboard (Local MLflow UI)")
+    
+    col1, col2 = st.columns(2)
+    
+    # Screenshot 1: The Run Table
+    with col1:
+        run_img_path = os.path.join(config.ARTIFACTS_DIR, "mlflow_runs.png")
+        if os.path.exists(run_img_path):
+            st.image(run_img_path, caption="Table of Tracked Runs & Parameters", use_container_width=True)
         else:
-            runs = client.search_runs([exp.experiment_id], order_by=["start_time DESC"], max_results=20)
-            if not runs:
-                st.info("No runs logged yet.")
-            else:
-                rows = []
-                for r in runs:
-                    d = {"run_id": r.info.run_id[:8], "status": r.info.status}
-                    d.update({f"metric.{k}": v for k, v in r.data.metrics.items()})
-                    d.update({f"param.{k}": v for k, v in r.data.params.items()
-                               if k in ("git_commit_hash", "python_version", "dataset_version")})
-                    rows.append(d)
-                st.markdown(f"### Recent Runs ({len(rows)})")
-                st.dataframe(pd.DataFrame(rows), use_container_width=True)
+            st.info("📸 Add `mlflow_runs.png` to your `/artifacts` folder to display it here.")
 
-                best = max(runs, key=lambda r: r.data.metrics.get("test_roc_auc", 0))
-                st.markdown("### Best Run")
-                st.json({"run_id": best.info.run_id, "metrics": best.data.metrics,
-                          "params": best.data.params})
-    except Exception as e:
-        st.info(f"MLflow store not accessible yet ({e}). Run `python train.py` first.")
+    # Screenshot 2: The Metrics Chart
+    with col2:
+        metrics_img_path = os.path.join(config.ARTIFACTS_DIR, "mlflow_metrics.png")
+        if os.path.exists(metrics_img_path):
+            st.image(metrics_img_path, caption="Metric Comparison Across Runs", use_container_width=True)
+        else:
+            st.info("📸 Add `mlflow_metrics.png` to your `/artifacts` folder to display it here.")
+
+    st.divider()
+    st.markdown("### Why MLflow?")
+    st.markdown(
+        """
+        * **Reproducibility:** Every model can be perfectly recreated using the logged parameters and Git commit hash.
+        * **Comparison:** Easily compare different hyperparameter tuning runs side-by-side.
+        * **Deployment:** The exact model file (`.pkl`) used in this Streamlit app was pulled directly from the best MLflow run.
+        """
+    )
+
 
 # ---------------------------------------------------------------------------
 # DOCUMENTATION
