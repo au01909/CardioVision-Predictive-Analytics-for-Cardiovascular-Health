@@ -6,8 +6,6 @@ Risk Prediction, MLflow Experiments, Documentation).
 """
 
 import os
-import subprocess
-import sys
 
 import pandas as pd
 import streamlit as st
@@ -16,27 +14,11 @@ import streamlit as st
 import config
 from utils import load_json
 
-# CLOUD DEPLOYMENT FIX: Auto-train if MLflow DB is missing
-if not os.path.exists(config.MLFLOW_DB_PATH):
-    print("MLflow database not found. Running train.py to generate artifacts...")
-    subprocess.run([sys.executable, "train.py"], check=True)
-
 st.set_page_config(
     page_title="CardioVision",
     page_icon="❤️",
     layout="wide",
     initial_sidebar_state="expanded",
-)
-
-# ---------------------------------------------------------------------------
-# Sidebar navigation
-# ---------------------------------------------------------------------------
-st.sidebar.title("❤️ CardioVision")
-st.sidebar.caption("Cardiovascular Disease Risk Prediction & Evaluation System")
-page = st.sidebar.radio(
-    "Navigate",
-    ["Home", "About Dataset", "Model Performance", "Risk Prediction",
-     "MLflow Experiments", "Documentation"],
 )
 
 
