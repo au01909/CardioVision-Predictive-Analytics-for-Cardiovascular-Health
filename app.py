@@ -10,7 +10,6 @@ import os
 import pandas as pd
 import streamlit as st
 
-# Import config FIRST so it is available everywhere
 import config
 from utils import load_json
 
@@ -21,10 +20,20 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+# ---------------------------------------------------------------------------
+# Sidebar navigation
+# ---------------------------------------------------------------------------
+st.sidebar.title("❤️ CardioVision")
+st.sidebar.caption("Cardiovascular Disease Risk Prediction & Evaluation System")
+page = st.sidebar.radio(
+    "Navigate",
+    ["Home", "About Dataset", "Model Performance", "Risk Prediction",
+     "MLflow Experiments", "Documentation"],
+)
+
 
 def artifacts_ready():
     return os.path.exists(config.MODEL_PATH) and os.path.exists(config.THRESHOLD_PATH)
-
 
 # ---------------------------------------------------------------------------
 # HOME
