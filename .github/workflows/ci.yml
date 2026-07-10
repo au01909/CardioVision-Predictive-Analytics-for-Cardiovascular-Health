@@ -60,7 +60,8 @@ jobs:
   build-documentation:
     needs: build-train-evaluate
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    # FIXED: Added workflow_dispatch so it runs when you click the button manually
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     
     # Add explicit write permissions for the GitHub token to push to gh-pages
     permissions:
@@ -83,7 +84,7 @@ jobs:
           cp README.md _site/README.md
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4  # Upgraded from v3 to v4 to fix Node 20 deprecation
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./_site
