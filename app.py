@@ -6,6 +6,8 @@ Risk Prediction, MLflow Experiments, Documentation).
 """
 
 import os
+import joblib
+import json
 
 import pandas as pd
 import streamlit as st
@@ -19,6 +21,24 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
 )
+
+# ---------------------------------------------------------------------------
+# Pre-load all artifacts into memory safely for cloud deployment
+# ---------------------------------------------------------------------------
+@st.cache_resource
+def load_model_artifacts():
+    """Loads model and preprocessing objects from the models/ folder."""
+    artifacts = {
+        "model": joblib.load(config.MODEL_PATH),
+        "imputer": joblib.load(config.IMPUTER_PATH),
+        "scaler": joblib.load(config.SCALER_PATH),
+        "selector": joblib.load(config.SELECTOR_PATH),
+    }
+    with open(config.THRESHOLD_PATH, "r") as f:
+        artifacts["threshold"] = json.load(f)
+    with open(config.FEATURE_LIST_PATH, "r") as f:
+        artifacts["features"] = json.load(f)
+    return artifacts
 
 # ---------------------------------------------------------------------------
 # Sidebar navigation
@@ -289,40 +309,13 @@ elif page == "MLflow Experiments":
     st.title("🧪 MLflow Experiment Tracking")
 
     st.markdown(
-        "All training runs are tracked with MLflow (parameters, metrics, plots, "
+        "All training runs are tracked locally with MLflow (parameters, metrics, plots, "
         "the serialized model, dataset version, and git commit hash)."
     )
     st.code(f"mlflow ui --backend-store-uri {config.MLFLOW_TRACKING_URI}", language="bash")
-    st.caption("Run the command above locally, then open http://localhost:5000 to browse runs.")
-
-    try:
-        import mlflow
-        mlflow.set_tracking_uri(config.MLFLOW_TRACKING_URI)
-        client = mlflow.tracking.MlflowClient()
-        exp = client.get_experiment_by_name(config.MLFLOW_EXPERIMENT_NAME)
-        if exp is None:
-            st.info("No experiments logged yet. Run `python train.py` first.")
-        else:
-            runs = client.search_runs([exp.experiment_id], order_by=["start_time DESC"], max_results=20)
-            if not runs:
-                st.info("No runs logged yet.")
-            else:
-                rows = []
-                for r in runs:
-                    d = {"run_id": r.info.run_id[:8], "status": r.info.status}
-                    d.update({f"metric.{k}": v for k, v in r.data.metrics.items()})
-                    d.update({f"param.{k}": v for k, v in r.data.params.items()
-                               if k in ("git_commit_hash", "python_version", "dataset_version")})
-                    rows.append(d)
-                st.markdown(f"### Recent Runs ({len(rows)})")
-                st.dataframe(pd.DataFrame(rows), use_container_width=True)
-
-                best = max(runs, key=lambda r: r.data.metrics.get("test_roc_auc", 0))
-                st.markdown("### Best Run")
-                st.json({"run_id": best.info.run_id, "metrics": best.data.metrics,
-                          "params": best.data.params})
-    except Exception as e:
-        st.info(f"MLflow store not accessible yet ({e}). Run `python train.py` first.")
+    st.caption("Run the command above on your local machine, then open http://localhost:5000 to browse runs.")
+    
+    st.info("🚀 **Note for Streamlit Cloud Users:** MLflow tracking is designed for local development and is not connected to this live cloud dashboard to keep the app lightweight and fast. The dashboard loads the pre-trained model artifacts directly.")
 
 # ---------------------------------------------------------------------------
 # DOCUMENTATION
