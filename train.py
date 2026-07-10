@@ -31,7 +31,7 @@ def train_model(X_train, y_train):
     )
 
     cv = StratifiedKFold(n_splits=config.CV_FOLDS, shuffle=True,
-                          random_state=config.RANDOM_STATE)
+                        random_state=config.RANDOM_STATE)
 
     search = RandomizedSearchCV(
         estimator=base_model,
@@ -94,7 +94,7 @@ def main():
         # ---- Threshold ----
         best_threshold = optimize_threshold(model, X_val, y_val)
         save_json({"threshold": best_threshold, "method": "youden_index"},
-                   config.THRESHOLD_PATH)
+                config.THRESHOLD_PATH)
 
         # ---- Persist artifacts (FR-14) ----
         save_pickle(model, config.MODEL_PATH)
